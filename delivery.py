@@ -66,8 +66,23 @@ while True:
             if food_choice.isdigit():
                 num = int(food_choice) - 1
                 if num >= 0 and num < len(menu):
-                    cart.append(menu[num])
-                    print(f"{menu[num][0]} добавлено в корзину")
+                # Запрашиваем количество
+                    quantity_input = input("Введи количество порций: ")
+                    if quantity_input.isdigit() and int(quantity_input) > 0:
+                        quantity = int(quantity_input)
+                        item_name = menu[num][0]
+                        item_price = menu[num][1]
+                        # Добавляем как словарь с количеством
+                        cart.append({
+                            "name": item_name,
+                            "price": item_price,
+                            "quantity": quantity
+                        })
+                        print(f"{item_name} x{quantity} добавлено в корзину")
+                    else:
+                        print("Некорректное количество. Добавление отменено")
+                else:
+                    print("Нет такого блюда")
                     
                     more = input("Добавить еще? (д/н): ")
                     if more.lower() != "д":
@@ -89,10 +104,13 @@ while True:
             else:
                 total = 0
                 for i in range(len(cart)):
-                    name = cart[i][0]
-                    price = cart[i][1]
-                    print(f"{i+1}. {name} - {price} руб")
-                    total = total + price
+                    item = cart[i]
+                    name = item["name"]
+                    price = item["price"]
+                    quantity = item["quantity"]
+                    item_total = price * quantity
+                    print(f"{i+1}. {name} - {price} руб x {quantity} = {item_total} руб")
+                    total = total + item_total
                 
                 print("-" * 50)
                 print(f"Сумма: {total} руб")
@@ -147,7 +165,7 @@ while True:
                 
                 total = 0
                 for item in cart:
-                    total = total + item[1]
+                    total = total + (item["price"] * item["quantity"])
                 
                 if total >= 600:
                     delivery = 0
