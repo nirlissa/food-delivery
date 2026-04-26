@@ -65,8 +65,8 @@ while True:
             
             if food_choice.isdigit():
                 num = int(food_choice) - 1
-                if num >= 0 and num < len(menu):
-                # Запрашиваем количество
+                if 0 <= num < len(menu):
+                    # Запрашиваем количество
                     quantity_input = input("Введи количество порций: ")
                     if quantity_input.isdigit() and int(quantity_input) > 0:
                         quantity = int(quantity_input)
@@ -81,12 +81,6 @@ while True:
                         print(f"{item_name} x{quantity} добавлено в корзину")
                     else:
                         print("Некорректное количество. Добавление отменено")
-                else:
-                    print("Нет такого блюда")
-                    
-                    more = input("Добавить еще? (д/н): ")
-                    if more.lower() != "д":
-                        break
                 else:
                     print("Нет такого блюда")
             else:
