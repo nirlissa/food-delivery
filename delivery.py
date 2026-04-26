@@ -2,6 +2,48 @@
 # Воронина Елизавета и Андриевская Кристина
 # Группа: 1-ИАИТ-109
 
+import json
+import os
+
+# ФАЙЛЫ ДЛЯ ХРАНЕНИЯ ДАННЫХ
+MENU_FILE = "menu.txt"
+ADDRESSES_FILE = "addresses.txt"
+ORDERS_FILE = "orders.txt"
+
+def load_menu():
+    """Загружает меню из файла"""
+    menu = []
+    if os.path.exists(MENU_FILE):
+        with open(MENU_FILE, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if line:
+                    parts = line.split("|")
+                    if len(parts) == 2:
+                        menu.append([parts[0], int(parts[1])])
+    else:
+        # Меню по умолчанию
+        menu = [
+            ["Пицца Маргарита", 450],
+            ["Пицца Пепперони", 550],
+            ["Бургер", 350],
+            ["Бургер Двойной", 450],
+            ["Суши Филадельфия", 600],
+            ["Суши Калифорния", 550],
+            ["Картошка фри", 150],
+            ["Наггетсы", 200],
+            ["Кола", 100],
+            ["Сок", 120]
+        ]
+        save_menu(menu)
+    return menu
+
+def save_menu(menu):
+    """Сохраняет меню в файл"""
+    with open(MENU_FILE, "w", encoding="utf-8") as f:
+        for item in menu:
+            f.write(f"{item[0]}|{item[1]}\n")
+            
 print("=" * 50)
 print("ДОСТАВКА ЕДЫ")
 print("=" * 50)
