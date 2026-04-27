@@ -43,6 +43,38 @@ def save_menu(menu):
     with open(MENU_FILE, "w", encoding="utf-8") as f:
         for item in menu:
             f.write(f"{item[0]}|{item[1]}\n")
+
+def load_addresses():
+    """Загружает адреса из файла"""
+    addresses = []
+    if os.path.exists(ADDRESSES_FILE):
+        with open(ADDRESSES_FILE, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if line:
+                    addresses.append(line)
+    else:
+        # Адреса по умолчанию
+        addresses = [
+            "ул. Ленина, 1",
+            "ул. Ленина, 5",
+            "ул. Пушкина, 10",
+            "ул. Гагарина, 3",
+            "ул. Мира, 2"
+        ]
+        save_addresses(addresses)
+    return addresses
+
+def save_addresses(addresses):
+    """Сохраняет адреса в файл"""
+    with open(ADDRESSES_FILE, "w", encoding="utf-8") as f:
+        for addr in addresses:
+            f.write(addr + "\n")
+
+def save_order(order_data):
+    """Сохраняет заказ в файл"""
+    with open(ORDERS_FILE, "a", encoding="utf-8") as f:
+        f.write(json.dumps(order_data, ensure_ascii=False) + "\n")
             
 print("=" * 50)
 print("ДОСТАВКА ЕДЫ")
@@ -60,7 +92,7 @@ def load_addresses_temp():
 
 # ЗАГРУЗКА ДАННЫХ
 menu = load_menu()
-addresses = load_addresses_temp()
+addresses = load_addresses()
 cart = []
 
 # КОРЗИНА
@@ -171,9 +203,9 @@ while True:
                 print("ОФОРМЛЕНИЕ ЗАКАЗА")
                 print("=" * 50)
                 
-                name = input("Как тебя зовут? ")
-                if name == "":
-                    name = "Гость"
+                customer_name = input("Как тебя зовут? ")
+                if customer_name == "":
+                    customer_name = "Гость"
                 
                 print("\nАдреса:")
                 for i in range(len(addresses)):
@@ -203,12 +235,12 @@ while True:
                 print("\n" + "=" * 50)
                 print("ЗАКАЗ ПРИНЯТ")
                 print("=" * 50)
-                print(f"Имя: {name}")
+                print(f"Имя: {customer_name}")
                 print(f"Адрес: {address}")
                 print("-" * 50)
                 print("Заказ:")
                 for item in cart:
-                    print(f"  • {item[0]}")
+                    print(f"  • {item['name']} x{item['quantity']}")
                 print("-" * 50)
                 print(f"Сумма: {total} руб")
                 print(f"Доставка: {delivery} руб")
@@ -216,6 +248,16 @@ while True:
                 print("=" * 50)
                 print("Спасибо за заказ")
                 print("=" * 50)
+
+                order_data = {
+                    "name": customer_name,
+                    "address": address,
+                    "items": cart.copy(),
+                    "total": total,
+                    "delivery": delivery,
+                    "final_total": total + delivery
+                }
+                save_order(order_data)
                 
                 cart = []
                 input("Нажми Enter для продолжения...")
